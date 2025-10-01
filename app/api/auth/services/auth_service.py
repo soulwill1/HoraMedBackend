@@ -1,6 +1,13 @@
 from sqlalchemy.orm import Session
-from ..db.models import User
-from ..core.security import verify_password, hash_password
+from db.models import User
+from core.security import verify_password, hash_password
+import os
+from dotenv import load_dotenv
+
+## Load the variables from .env
+load_dotenv()
+# from .env
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 def authenticate_user(db: Session, username: str, password: str):
     user = db.query(User).filter(User.username == username).first()
