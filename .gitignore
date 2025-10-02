@@ -1,0 +1,42 @@
+# Arquivos de cache e arquivos byte-compiled (.pyc, .pyo, etc.)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+
+# Ambientes Virtuais (Virtual Environments)
+# Ignorar o ambiente virtual completo é crucial.
+# Por padrão, muitos são criados em 'venv' ou '.venv', mas inclua outros que você possa usar.
+venv/
+.venv/
+env/
+.env/
+/bin/
+/lib/
+/include/
+
+# Logs e Dados
+*.log
+*.sqlite3
+*.csv
+/data/
+
+# Builds, Distribuição e Pacotes
+# Ignora arquivos gerados por ferramentas de empacotamento.
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# Arquivos de IDE (Editores de Código)
+# Evite que configurações pessoais de editores entrem no repositório.
+.idea/             # JetBrains (PyCharm, IntelliJ)
+.vscode/           # Visual Studio Code
+*.sublime-project  # Sublime Text
+*.sublime-workspace
+.project           # Eclipse
+
+# Arquivos de Sistema Operacional
+.DS_Store          # macOS
+Thumbs.db          # Windows
