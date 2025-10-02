@@ -8,7 +8,7 @@ from api.auth.schemas.user_auth_schema import Token
 from api.users.schemas.user_create_schema import UserResponse
 from db.models import User
 from db.database import get_db
-from api.auth.services.auth_service import create_access_token, get_current_active_user, verify_password
+from api.auth.services.auth_service import create_access_token, get_current_active_user, verify_pwd
 from api.users.schemas.user_create_schema import UserCreate
 from api.auth.services.auth_service import register_user
 
@@ -25,7 +25,7 @@ def register_user_route(user: UserCreate, db: Session = Depends(get_db)):
 def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == form_data.username).first()
     
-    if not user or verify_password(form_data.password, user.hashed_pwd):
+    if not user or verify_pwd(form_data.password, user.hashed_pwd):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     if not user.is_active:
         raise HTTPException(status_code=401, detail="Inactive user")

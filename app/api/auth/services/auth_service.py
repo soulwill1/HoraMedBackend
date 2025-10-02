@@ -17,10 +17,10 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 # Hash e verificação
-def verify_password(plain_password: str, password: str) -> bool:
-    return pwd_context.verify(plain_password, password)
+def verify_pwd(plain_pwd: str, hashed_pwd: str) -> bool:
+    return pwd_context.verify(plain_pwd, hashed_pwd)
 
-def hash_password(password: str) -> str:
+def get_pwd_hash(password: str) -> str:
     return pwd_context.hash(password)
 
 # JWT
@@ -83,13 +83,13 @@ def register_user(user: UserCreate, db: Session):
     if db.query(User).filter(User.email == user.email).first():
         raise HTTPException(status_code=404, detail="User already created!")
 
-    hashed_password = hash_password(user.password)
+    hashed_password = get_pwd_hash(user.password)
     db_user = User(
         name= user.name,
         email = user.email,
         phone = user.phone,
         date_of_birth = user.date_of_birth,
-        password = hashed_password
+        hashed_pwd = hashed_password
     )
     db.add(db_user)
     db.commit()

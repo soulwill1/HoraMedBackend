@@ -1,7 +1,7 @@
 from api.users.schemas.user_create_schema import UserCreate
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException
-from api.auth.services.auth_service import hash_password
+from api.auth.services.auth_service import get_pwd_hash
 from db.models import User
 
 
@@ -15,13 +15,13 @@ def create_user_service(user: UserCreate, current_user: User, db: Session):
     if db.query(User).filter(User.email == user.email).first():
         raise HTTPException(status_code = 409, detail= "User already exist!")
     
-    hashed_password = hash_password(user.password)
+    hashed_password = get_pwd_hash(user.password)
     db_user = User(
         name = user.name,
         email = user.email,
         phone = user.phone,
         date_of_birth = user.date_of_birth,
-        password = hashed_password
+        hashed_pwd = hashed_password
     )
     
     db.add(db_user)
@@ -52,7 +52,6 @@ def delete_user_service(user_id: int, current_user: User, db: Session):
     if user.id == current_user.id:
         raise HTTPException(status_code=400, detail="You can not delete yourself!")
     
-
     db.delete(user)
     db.commit()
     return {"Message":"User deleted!"}

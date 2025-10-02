@@ -9,5 +9,5 @@ class User(Base):
     email = Column(String(100), nullable=False, unique=True)
     phone = Column(Integer, nullable=False)
     date_of_birth = Column(Date, nullable=False)
-    password = Column(String, nullable=False)
+    hashed_pwd = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
