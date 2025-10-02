@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date
+from sqlalchemy import Column, Integer, String, Date, Boolean
 from .database import Base
 
 class User(Base):
@@ -10,3 +10,4 @@ class User(Base):
     phone = Column(Integer, nullable=False)
     date_of_birth = Column(Date, nullable=False)
     password = Column(String, nullable=False)
+    is_active = Column(Boolean, default=True)

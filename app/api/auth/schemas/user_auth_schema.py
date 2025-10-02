@@ -1,10 +1,14 @@
 from pydantic import BaseModel
+from typing import Optional
+
 
 class LoginRequest(BaseModel):
     email: str
     password: str
 
-class LoginResponse(BaseModel):
-    id: int
-    email: str
-    is_active: bool
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    email: Optional[str] = None
