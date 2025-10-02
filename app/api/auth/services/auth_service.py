@@ -83,7 +83,8 @@ def register_user(user: UserCreate, db: Session):
     if db.query(User).filter(User.email == user.email).first():
         raise HTTPException(status_code=404, detail="User already created!")
 
-    hashed_password = get_pwd_hash(user.password)
+    safe_password = user.password[:72] 
+    hashed_password = get_pwd_hash(safe_password)
     db_user = User(
         name= user.name,
         email = user.email,
