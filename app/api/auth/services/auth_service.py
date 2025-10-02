@@ -5,6 +5,7 @@ from passlib.context import CryptContext
 from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
+from fastapi.security import OAuth2PasswordRequestForm
 
 from api.auth.config.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from api.users.schemas.user_create_schema import UserCreate
@@ -14,7 +15,7 @@ from api.auth.schemas.user_auth_schema import TokenData
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/v1/auth/token")
 
 # Hash e verificação
 def verify_pwd(plain_pwd: str, hashed_pwd: str) -> bool:
@@ -78,7 +79,6 @@ def get_current_active_user(current_user: User = Depends(get_current_user)):
         raise credentials_exception
     return current_user
 
-
 def register_user(user: UserCreate, db: Session):
     if db.query(User).filter(User.email == user.email).first():
         raise HTTPException(status_code=404, detail="User already created!")
@@ -96,3 +96,28 @@ def register_user(user: UserCreate, db: Session):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+def login_for_access_token(form_data: OAuth2PasswordRequestForm, db: Session):
+    user = db.query(User).filter(User.email == form_data.username).first()
+    
+    if not user or not verify_pwd(form_data.password, user.hashed_pwd):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    if not user.is_active:
+        raise HTTPException(status_code=400, detail="Inactive user")
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub":user.email}, expires_delta=access_token_expires
+    )
+    return {"access_token":access_token,"token_type":"bearer"}
+
+def verify_token_endpoint(current_user: User):
+    return {
+        "valid": True,
+        "user": {
+            "id": current_user.id,
+            "name": current_user.name,
+            "email": current_user.email,
+            "phone": current_user.phone,
+            "date_of_birth": current_user.date_of_birth
+        }
+    }
