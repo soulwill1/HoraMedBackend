@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from db.models import User
-from core.security import verify_password, hash_password
+from api.auth.core.security import verify_password, hash_password
 import os
 from dotenv import load_dotenv
 

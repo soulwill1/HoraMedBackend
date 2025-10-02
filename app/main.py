@@ -1,12 +1,15 @@
 from fastapi import FastAPI
-from .db import models, database
-from .api.auth.routes import routes
+from db.database import Base, engine
+# from api.auth.routes.auth_routes import api_auth
+from api.users.routes.user_create_routes import api_users
 
-models.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI(title="Auth API with Cookies")
 
-app.include_router(routes.router)
+Base.metadata.create_all(bind=engine)
+
+# app.include_router(api_auth)
+app.include_router(api_users)
 
 @app.get("/")
 def root():

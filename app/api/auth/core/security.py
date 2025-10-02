@@ -1,40 +1,47 @@
+from datetime import datetime, timedelta
+from jose import JWTError, jwt
 from passlib.context import CryptContext
-from fastapi import Request, Response
-from itsdangerous import URLSafeSerializer
-from .config import SECRET_KEY
+from fastapi import HTTPException, status, Depends
+from fastapi.security import OAuth2PasswordBearer
+from sqlalchemy.orm import Session
+from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
+from db.database import get_db
+from db.models import User
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-COOKIE_NAME = "session"
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
-serializer = URLSafeSerializer(SECRET_KEY, salt="cookie-session")
-
-# Hashing
+# Hash e verificação
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
-def verify_password(plain: str, hashed: str) -> bool:
-    return pwd_context.verify(plain, hashed)
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
 
-# Cookies
-def create_session_cookie(response: Response, user_id: int):
-    data = serializer.dumps({"user_id": user_id})
-    response.set_cookie(
-        key=COOKIE_NAME,
-        value=data,
-        httponly=True,
-        samesite="lax",
-        secure=False,  # True se usar HTTPS
+# JWT
+def create_access_token(data: dict, expires_delta: timedelta = None):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+# Pegar usuário autenticado
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
     )
-
-def get_user_id_from_cookie(request: Request):
-    cookie = request.cookies.get(COOKIE_NAME)
-    if not cookie:
-        return None
     try:
-        data = serializer.loads(cookie)
-        return data.get("user_id")
-    except:
-        return None
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id: str = payload.get("sub")
+        if user_id is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
 
-def clear_session_cookie(response: Response):
-    response.delete_cookie(COOKIE_NAME)
+    user = db.query(User).filter(User.id == int(user_id)).first()
+    if user is None:
+        raise credentials_exception
+    return user
