@@ -15,15 +15,18 @@ from api.auth.schemas.user_auth_schema import TokenData
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/v1/auth/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/v1/auth/login")
 
+
+# ==============================
+# UTILS
+# ==============================
 # Hash e verificação
 def verify_pwd(plain_pwd: str, hashed_pwd: str) -> bool:
     return pwd_context.verify(plain_pwd, hashed_pwd)
 
 def get_pwd_hash(password: str) -> str:
     return pwd_context.hash(password)
-
 # JWT
 def create_access_token(data: dict, expires_delta: Optional[timedelta]=None):
     to_encode = data.copy()
@@ -36,6 +39,10 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta]=None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+
+# ==============================
+# AUTH
+# ==============================
 def verify_token(token: str) -> TokenData:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -79,36 +86,39 @@ def get_current_active_user(current_user: User = Depends(get_current_user)):
         raise credentials_exception
     return current_user
 
-def register_user(user: UserCreate, db: Session):
-    if db.query(User).filter(User.email == user.email).first():
-        raise HTTPException(status_code=404, detail="User already created!")
-
-    safe_password = user.password[:72] 
-    hashed_password = get_pwd_hash(safe_password)
-    db_user = User(
-        name= user.name,
-        email = user.email,
-        phone = user.phone,
-        date_of_birth = user.date_of_birth,
-        hashed_pwd = hashed_password
-    )
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
-
 def login_for_access_token(form_data: OAuth2PasswordRequestForm, db: Session):
     user = db.query(User).filter(User.email == form_data.username).first()
     
     if not user or not verify_pwd(form_data.password, user.hashed_pwd):
         raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    if user.is_deleted:
+        if user.deletion_date and user.deletion_date > datetime.utcnow():
+            # Reactive the account
+            user.is_deleted = False
+            user.deletion_date = None
+            db.commit()
+
+            # Reactive patients
+            if user.is_admin:
+                patients = db.query(User).filter(User.owner_id == user.id).all()
+                for p in patients:
+                    p.is_deleted = False
+                    p.deletion_date = None
+                db.commit()
+        else:
+            # delete permanent
+            raise HTTPException(status_code=410, detail="Account permanently deleted.")
+
     if not user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
+
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub":user.email}, expires_delta=access_token_expires
+        data={"sub": user.email}, expires_delta=access_token_expires
     )
-    return {"access_token":access_token,"token_type":"bearer"}
+    return {"access_token": access_token, "token_type": "bearer"}
+
 
 def verify_token_endpoint(current_user: User):
     return {

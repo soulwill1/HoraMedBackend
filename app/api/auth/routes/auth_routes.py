@@ -9,7 +9,7 @@ from db.models import User
 from db.database import get_db
 from api.auth.services.auth_service import get_current_active_user, verify_token_endpoint, login_for_access_token
 from api.users.schemas.user_create_schema import UserCreate
-from api.auth.services.auth_service import register_user
+from api.users.services.user_create_service import create_user_service
 
 api_auth = APIRouter(
     prefix="/v1/auth", 
@@ -20,11 +20,11 @@ api_auth = APIRouter(
 def get_profile(current_user: User = Depends(get_current_active_user)):
     return current_user
 
-@api_auth.post("/register", response_model=UserResponse)
+@api_auth.post("/signup", response_model=UserResponse)
 def register_user_route(user: UserCreate, db: Session = Depends(get_db)):
-    return register_user(user=user, db=db)
+    return create_user_service(user=user, db=db, current_user=None)
 
-@api_auth.post("/token", response_model=Token)
+@api_auth.post("/login", response_model=Token)
 def login_access_token_route(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     return login_for_access_token(form_data=form_data, db=db)
 
