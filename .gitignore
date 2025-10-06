@@ -1,3 +1,5 @@
+#banco de dados de teste
+test.db
 # Arquivos de cache e arquivos byte-compiled (.pyc, .pyo, etc.)
 __pycache__/
 *.pyc
