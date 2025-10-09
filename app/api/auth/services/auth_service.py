@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from typing import Optional
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
@@ -7,11 +7,10 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from fastapi.security import OAuth2PasswordRequestForm
 
-from api.auth.config.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-from api.users.schemas.user_create_schema import UserCreate
-from db.models import User
-from db.database import get_db
-from api.auth.schemas.user_auth_schema import TokenData
+from app.api.auth.config.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
+from app.db.models import User
+from app.db.database import get_db
+from app.api.auth.schemas.user_auth_schema import TokenData
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -31,9 +30,9 @@ def get_pwd_hash(password: str) -> str:
 def create_access_token(data: dict, expires_delta: Optional[timedelta]=None):
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+        expire = datetime.now(UTC) + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.now(UTC) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
 
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)

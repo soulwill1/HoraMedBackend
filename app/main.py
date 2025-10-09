@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from db.database import Base, engine
-from api.auth.routes.auth_routes import api_auth
-from api.users.routes.user_create_routes import api_users
+from .db.database import Base, engine
+from .api.auth.routes.auth_routes import api_auth
+from .api.users.routes.user_create_routes import api_users
 
 
 app = FastAPI(title="Auth API with Cookies")

@@ -36,5 +36,5 @@ jobs:
           pip install pytest pytest-cov
       - name: Run tests
         env:
-          DATABASE_URL: postgresql://test:test@localhost:5432/test_db
+          DATABASE_URL: postgresql://test:test@localhost:5432/postgresql_test_db
         run: pytest -v --cov=api --cov-report=term-missing

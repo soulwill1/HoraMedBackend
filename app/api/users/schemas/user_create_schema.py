@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import date
 from uuid import UUID
 from typing import Optional
@@ -21,8 +21,7 @@ class UserResponse(BaseModel):
     is_admin: bool
     owner_id: UUID | None = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True) 
 
 class UserUpdate(BaseModel):
     name: Optional[str] = None

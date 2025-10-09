@@ -1,11 +1,12 @@
-from api.users.schemas.user_create_schema import UserCreate, UserUpdate
-from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException
-from api.auth.services.auth_service import get_pwd_hash
-from db.models import User
-from typing import Optional
+from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
+from typing import Optional
 from uuid import UUID
+
+from app.api.auth.services.auth_service import get_pwd_hash
+from app.db.models import User
+from app.api.users.schemas.user_create_schema import UserCreate, UserUpdate
 
 
 def get_user_service(name: str, current_user: User, db: Session):

@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
-from api.users.schemas.user_create_schema import UserResponse, UserCreate, UserUpdate
-from api.users.services.user_create_service import create_user_service, update_user_service, delete_user_service, get_user_service, get_all_users_service
-from sqlalchemy.orm import Session
-from api.auth.services.auth_service import get_current_active_user
-from db.models import User
-from db.database import get_db
 from typing import List
+from sqlalchemy.orm import Session
+
+from app.api.users.schemas.user_create_schema import UserResponse, UserCreate, UserUpdate
+from app.api.users.services.user_create_service import create_user_service, update_user_service, delete_user_service, get_user_service, get_all_users_service
+from app.api.auth.services.auth_service import get_current_active_user
+from app.db.models import User
+from app.db.database import get_db
 
 
 api_users = APIRouter(
