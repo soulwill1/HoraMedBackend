@@ -34,45 +34,59 @@ Certifique-se de ter o Docker e o Docker Compose instalados em sua máquina.
 
 2. Arquivos de Ambiente (.env)
 
-O projeto utiliza variáveis de ambiente para a configuração. Crie um arquivo chamado .env_dev na raiz do projeto, baseado em um modelo (se houver), ou com as seguintes variáveis de exemplo:
+O projeto exige que as variáveis de configuração do ambiente (ENV, ENV_FILE, ENV_VOLUME) e do banco de dados sejam definidas.
+
+Crie o arquivo .env_dev na raiz do projeto com as seguintes variáveis:
+Ini, TOML
 
 # .env_dev
+
+# Variáveis do Banco de Dados
 POSTGRES_USER=horamed_user
 POSTGRES_PASSWORD=horamed_password
 POSTGRES_DB=horamed_dev
+
+# Variáveis de Configuração do Docker Compose (Obrigatórias)
+# Estas variáveis são lidas pelo docker-compose.yml para carregar o env_file e o volume
 ENV=dev
+ENV_FILE=.env_dev
+ENV_VOLUME=./app_data_dev:/app/data
+
+O valor de ENV_VOLUME define um volume local (./app_data_dev) para persistência de dados do container.
 
 3. Comandos de Execução
+
+Usaremos a flag --env-file para carregar todas as variáveis necessárias de forma limpa.
 
 Modo Desenvolvimento (DEV)
 
 Use este modo para rodar a API com recarregamento automático (--reload).
 Bash
 
-# Define o ambiente DEV e sobe os containers (API + Banco de Dados)
-ENV=dev docker-compose up --build
+# Sobe os containers, carregando todas as variáveis de .env_dev
+docker-compose --env-file .env_dev up --build
 
 Após o banco de dados estar pronto, a API estará acessível em http://localhost:8000.
 
 Modo Produção (PROD)
 
-Use este modo para rodar a aplicação com Gunicorn e UvicornWorker de forma performática.
+Crie um arquivo .env_prod e use este modo para rodar a aplicação com Gunicorn e UvicornWorker.
 Bash
 
-# Define o ambiente PROD e sobe os containers em modo detached (-d)
-ENV=prod docker-compose up --build -d
+# Sobe os containers em modo detached (-d) usando o arquivo de PROD
+docker-compose --env-file .env_prod up --build -d
 
 Para ver os logs: docker-compose logs -f horamed
 
 Rodar Testes
 
-O ambiente de testes é configurado para executar o pytest e fechar o container logo em seguida.
+O ambiente de testes deve usar um arquivo de variáveis dedicado (e.g., .env_test) e executa o pytest como um comando one-off.
 Bash
 
-# Define o ambiente TEST, sobe o banco de dados e executa os testes
-ENV=test docker-compose run --rm horamed
+# Executa os testes e remove o container após o término
+docker-compose --env-file .env_test run --rm horamed
 
-Configuração Local (Método Alternativo)
+💻 Configuração Local (Método Alternativo)
 
 Se preferir rodar a aplicação diretamente na sua máquina:
 
@@ -97,7 +111,7 @@ pip install -r requirements.txt
 Execute o Servidor (Conecte a um DB local):
 Bash
 
-# Certifique-se de que seu banco de dados PostgreSQL está rodando
+# ATENÇÃO: Certifique-se de que seu banco de dados PostgreSQL está rodando localmente
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
-(Você precisará configurar as variáveis de ambiente do seu DB local manualmente.)
+(As variáveis de conexão com o banco de dados deverão ser exportadas para o seu shell manualmente antes de rodar o uvicorn.)
