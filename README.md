@@ -4,7 +4,7 @@ API do sistema HoraMed, responsável por gerenciar usuários, medicamentos e not
 
 Desenvolvido em Python, com foco em simplicidade, escalabilidade e boas práticas.
 
-🚀 Funcionalidades
+Funcionalidades
 
     Cadastro e gerenciamento de usuários.
 
@@ -14,7 +14,7 @@ Desenvolvido em Python, com foco em simplicidade, escalabilidade e boas prática
 
     API para integração com o frontend (Next.js).
 
-🛠️ Tecnologias
+Tecnologias
 
     Python 3.11
 
@@ -24,7 +24,7 @@ Desenvolvido em Python, com foco em simplicidade, escalabilidade e boas prática
 
     Docker & Docker Compose para orquestração de ambiente.
 
-📦 Configuração e Execução (Recomendado: Docker Compose)
+Configuração e Execução (Recomendado: Docker Compose)
 
 A maneira mais fácil e recomendada de rodar o projeto é utilizando o Docker Compose, garantindo que o ambiente da aplicação e o banco de dados estejam configurados corretamente.
 
@@ -72,7 +72,7 @@ Bash
 # Define o ambiente TEST, sobe o banco de dados e executa os testes
 ENV=test docker-compose run --rm horamed
 
-💻 Configuração Local (Método Alternativo)
+Configuração Local (Método Alternativo)
 
 Se preferir rodar a aplicação diretamente na sua máquina:
 
