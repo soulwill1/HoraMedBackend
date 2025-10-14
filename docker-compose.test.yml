@@ -1,0 +1,12 @@
+services:
+  horamed:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        ENV: test
+    env_file:
+      - .env_test
+    environment:
+      ENV: test
+    command: ["sh", "-c", "pytest -v"]
