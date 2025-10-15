@@ -4,9 +4,9 @@ from datetime import datetime, timedelta
 from typing import Optional
 from uuid import UUID
 
-from app.api.auth.services.auth_service import get_pwd_hash
+from app.api.v1.auth.services.auth_service import get_pwd_hash
 from app.db.models import User
-from app.api.users.schemas.user_create_schema import UserCreate, UserUpdate
+from app.api.v1.users.schemas.user_create_schema import UserCreate, UserUpdate
 
 
 def get_user_service(name: str, current_user: User, db: Session):

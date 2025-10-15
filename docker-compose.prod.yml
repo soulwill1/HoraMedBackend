@@ -1,0 +1,27 @@
+services:
+  horamed:
+    build:
+      context: .
+      target: prod       
+    container_name: horamed-prod
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env_prod
+    depends_on:
+      - db
+    environment:
+      ENV: prod
+    restart: always
+
+  db:
+    image: postgres:15
+    container_name: horamed-db-prod
+    restart: always
+    env_file: 
+      - .env_prod
+    volumes:
+      - horamed-db-data-prod:/var/lib/postgresql/data
+
+volumes:
+  horamed-db-data-prod:

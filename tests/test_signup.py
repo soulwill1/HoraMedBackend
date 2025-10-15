@@ -7,7 +7,7 @@ def test_signup_creates_user_successfully(client):
         "password": "amora"
     }
 
-    response = client.post("/v1/auth/signup", json=user_data)
+    response = client.post("api/v1/auth/signup", json=user_data)
     assert response.status_code in (200, 201)
     data = response.json()
     assert data["email"] == user_data["email"]
