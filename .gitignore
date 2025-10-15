@@ -1,5 +1,12 @@
 #banco de dados de teste
 test.db
+
+#pastas
+app_data_dev
+dev_volume
+.coverage
+.vscode/
+
 # Arquivos de cache e arquivos byte-compiled (.pyc, .pyo, etc.)
 __pycache__/
 *.pyc
@@ -13,6 +20,7 @@ __pycache__/
 venv/
 .venv/
 env/
+.env_*
 .env
 .env_*
 .env/
