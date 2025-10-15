@@ -1,15 +1,13 @@
 from fastapi import FastAPI
 from .db.database import Base, engine
-from .api.auth.routes.auth_routes import api_auth
-from .api.users.routes.user_create_routes import api_users
+from .api.v1.router import api_router
 
 
-app = FastAPI(title="Auth API with Cookies")
+app = FastAPI(title="HoraMed API")
 
 Base.metadata.create_all(bind=engine)
 
-app.include_router(api_auth)
-app.include_router(api_users)
+app.include_router(api_router, prefix="/api/v1")
 
 @app.get("/")
 def root():

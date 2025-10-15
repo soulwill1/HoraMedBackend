@@ -2,15 +2,15 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from sqlalchemy.orm import Session
 
-from app.api.users.schemas.user_create_schema import UserResponse, UserCreate, UserUpdate
-from app.api.users.services.user_create_service import create_user_service, update_user_service, delete_user_service, get_user_service, get_all_users_service
-from app.api.auth.services.auth_service import get_current_active_user
+from app.api.v1.users.schemas.user_create_schema import UserResponse, UserCreate, UserUpdate
+from app.api.v1.users.services.user_create_service import create_user_service, update_user_service, delete_user_service, get_user_service, get_all_users_service
+from app.api.v1.auth.services.auth_service import get_current_active_user
 from app.db.models import User
 from app.db.database import get_db
 
 
 api_users = APIRouter(
-    prefix="/v1/accounts",
+    prefix="/accounts",
     tags=["api_users"]
 )
 

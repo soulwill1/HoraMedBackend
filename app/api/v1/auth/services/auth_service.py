@@ -7,14 +7,15 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from fastapi.security import OAuth2PasswordRequestForm
 
-from app.api.auth.config.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
+from app.core.config import API_V1_STR, AUTH_LOGIN_ENDPOINT
+from app.core.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from app.db.models import User
 from app.db.database import get_db
-from app.api.auth.schemas.user_auth_schema import TokenData
+from app.api.v1.auth.schemas.user_auth_schema import TokenData
 
-
+OAUTH2_TOKEN_URL = API_V1_STR + AUTH_LOGIN_ENDPOINT
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/v1/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=OAUTH2_TOKEN_URL)
 
 
 # ==============================

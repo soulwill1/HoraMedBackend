@@ -2,11 +2,29 @@ services:
   horamed:
     build:
       context: .
-      dockerfile: Dockerfile
-      args:
-        ENV: test
+      target: test       
+    container_name: horamed-test
     env_file:
       - .env_test
     environment:
       ENV: test
-    command: ["sh", "-c", "pytest -v"]
+    depends_on:
+      - db
+    command: ["pytest", "-v"]
+    volumes:
+      - .:/app
+    tty: true
+
+  db:
+    image: postgres:15
+    container_name: horamed-db-test
+    restart: always
+    env_file: 
+      - .env_test
+    ports:
+      - "5433:5432"   
+    volumes:
+      - horamed-db-data-test:/var/lib/postgresql/data
+
+volumes:
+  horamed-db-data-test:
