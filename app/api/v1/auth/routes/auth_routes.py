@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
 
-from app.api.v1.auth.config.config import ACCESS_TOKEN_EXPIRE_MINUTES
+from app.core.config import ACCESS_TOKEN_EXPIRE_MINUTES
 from app.api.v1.auth.schemas.user_auth_schema import Token
 from app.api.v1.users.schemas.user_create_schema import UserResponse
 from app.db.models import User
