@@ -111,7 +111,7 @@ def update_user_service(user_id: str, update_data: UserUpdate, current_user: Use
 
 def delete_user_service(user_id: str, current_user: User, db: Session):
     try:
-        user_uuid = UUID(user_id)  # convert string to UUID
+        user_uuid = UUID(user_id)
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid user ID format")
 
