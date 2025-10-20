@@ -22,6 +22,7 @@ venv/
 env/
 .env_*
 .env
+.env_*
 .env/
 /bin/
 /lib/
