@@ -11,7 +11,6 @@ from app.db.database import get_db
 
 api_users = APIRouter(
     prefix="/accounts",
-    tags=["api_users"]
 )
 
 @api_users.get("/users", response_model=List[UserResponse])
