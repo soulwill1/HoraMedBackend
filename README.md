@@ -1,36 +1,67 @@
+HoraMed - Backend
 
-### 📂 `HoraMed-backend/README.md`
-```markdown
-# HoraMed - Backend
+API do sistema HoraMed, responsável por gerenciar usuários, medicamentos e notificações.
+Desenvolvido em Python, com foco em simplicidade, escalabilidade e boas práticas.
 
-API do sistema HoraMed, responsável por gerenciar usuários, medicamentos e notificações.  
-Desenvolvido em **Python**, com foco em simplicidade, escalabilidade e boas práticas.
+Funcionalidades
 
-## 🚀 Funcionalidades
-- Cadastro e gerenciamento de usuários.
-- Cadastro de medicamentos e horários.
-- Geração de lembretes e notificações.
-- API para integração com o frontend (Next.js).
+Cadastro e gerenciamento de usuários
 
-## 🛠️ Tecnologias
-- [Python 3.x](https://www.python.org/)
-- [FastAPI](https://fastapi.tiangolo.com/) (ou Flask, dependendo da escolha)
-- [SQLAlchemy](https://www.sqlalchemy.org/) + SQLite/PostgreSQL
-- [Alembic](https://alembic.sqlalchemy.org/) para migrações de banco de dados
+Cadastro de medicamentos e horários
 
-## 📦 Instalação
-```bash
-# Clone o repositório
-git clone https://github.com/soulwill1/HoraMed.git
-cd HoraMed/HoraMed-backend
+Geração de lembretes e notificações
 
-# Crie o ambiente virtual
-python -m venv venv
-source venv/bin/activate   # Linux/Mac
-venv\Scripts\activate      # Windows
+API para integração com o frontend (Next.js)
 
-# Instale as dependências
-pip install -r requirements.txt
+Tecnologias
 
-# Execute o servidor
-uvicorn app.main:app --reload
+Python 3.11
+
+FastAPI para desenvolvimento da API
+
+PostgreSQL como banco de dados principal
+
+Docker e Docker Compose para orquestração de ambiente
+
+Configuração e execução
+
+A execução do projeto é feita via Makefile.
+
+Comandos principais:
+
+make dev         # Sobe o ambiente de desenvolvimento
+make dev-down    # Derruba o ambiente de desenvolvimento
+
+make test        # Sobe o ambiente de testes
+make test-down   # Derruba o ambiente de testes
+
+make prod        # Sobe o ambiente de produção
+make prod-down   # Derruba o ambiente de produção
+
+make clean       # Remove containers e volumes
+
+Pré-requisitos
+
+Docker
+
+Docker Compose
+
+Arquivos de ambiente (.env)
+
+Crie os arquivos .env_dev, .env_test e .env_prod conforme o ambiente desejado.
+
+Exemplo:
+# Ambiente
+ENV=dev
+ENV_FILE=.env_dev
+ENV_VOLUME=./app_data_dev:/app/data
+
+# Banco de dados
+POSTGRES_USER=user
+POSTGRES_PASSWORD=pass
+POSTGRES_DB=exemplodb
+DATABASE_URL=postgresql://user:pass@db:5432/exemplodb
+
+# Segurança
+SECRET_KEY=senha
+
