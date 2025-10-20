@@ -1,12 +1,10 @@
 # HoraMed - Backend
-
 API do sistema HoraMed, responsável por gerenciar usuários, medicamentos e notificações.  
 Desenvolvido em **Python**, com foco em simplicidade, escalabilidade e boas práticas.
 
 ---
 
 ## Funcionalidades
-
 - Cadastro e gerenciamento de usuários  
 - Cadastro de medicamentos e horários  
 - Geração de lembretes e notificações  
@@ -24,7 +22,6 @@ Desenvolvido em **Python**, com foco em simplicidade, escalabilidade e boas prá
 ---
 
 ## Configuração e Execução
-
 A execução do projeto é feita via **Makefile**.
 
 ### Comandos principais
